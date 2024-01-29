@@ -1,28 +1,62 @@
-import React, { useState } from 'react';
-import ExpenseItem from './ExpenseItem';
-import ExpensesFilter from './ExpensesFilter';
-import Card from '../UI/Card';
-import './Expenses.css';
+import React, { useState } from "react";
+import ExpenseItem from "./ExpenseItem";
+import ExpensesFilter from "./ExpensesFilter";
+import Card from "../UI/Card";
+import "./Expenses.css";
 
-const  Expenses = (props) => {
-  const [filteredYear, setFilteredYear] = useState('2020');
+const Expenses = (props) => {
+  const [filteredYear, setFilteredYear] = useState("2020");
 
-  const filterChangeHandler = selectedYear => {
+  const filterChangeHandler = (selectedYear) => {
     setFilteredYear(selectedYear);
   };
-    return (
-      <div>
-        <Card className="expenses">
-           <ExpensesFilter selected={filteredYear} onChangeFilter={filterChangeHandler} />
-           {console.log(props.items)}
-           {props.items.map(expense =>
-           
-             <ExpenseItem 
-              title={expense.title}  
-              amount={expense.amount}  
-              date={expense.date} />
-              )}
-          {/* <ExpenseItem
+
+  const filteredExpenses = props.items.filter((expense) => {
+    return expense.date.getFullYear().toString() === filteredYear;
+  });
+
+  // let content = props.items.map((item) => (
+  //   <ExpenseItem
+  //     key={item.id}
+  //     title={item.title}
+  //     amount={item.amount}
+  //     date={item.date}
+  //     LocationOfExpenditure={item.LocationOfExpenditure}
+  //   />
+  // ));
+
+  let expensesContent = <p>No expenses found.</p>;
+
+  if (filteredExpenses.length > 0) {
+    expensesContent = filteredExpenses.map((expense) => (
+      <ExpenseItem
+        key={expense.id}
+        title={expense.title}
+        amount={expense.amount}
+        date={expense.date}
+      />
+    ));
+  }
+
+  return (
+    <div>
+      <Card className="expenses">
+        <ExpensesFilter
+          selected={filteredYear}
+          onChangeFilter={filterChangeHandler}
+        />
+        {expensesContent}
+        {/* {console.log(props.items)} */}
+        {/* {props.items.map((expense) => (
+          <ExpenseItem
+            key={expense.id}
+            title={expense.title}
+            amount={expense.amount}
+            date={expense.date}
+          />
+        ))} */}
+        {/* {content} */}
+        {/* <ExpenseItem
             title={props.items[0].title}
             amount={props.items[0].amount}
             date={props.items[0].date}
@@ -42,9 +76,9 @@ const  Expenses = (props) => {
             amount={props.items[3].amount}
             date={props.items[3].date}
           /> */}
-        </Card>
-        </div>
-      );
-    }
-    
-    export default Expenses;
+      </Card>
+    </div>
+  );
+};
+
+export default Expenses;
